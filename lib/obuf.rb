@@ -2,10 +2,9 @@ require "tempfile"
 
 # An object buffer for Ruby objects. Use it to sequentially store a shitload
 # of objects on disk and then retreive them one by one. Make sure to call clear when done
-# with it to discard the stored blob. It can be used like a disk-based object buffer.
-# (Tracksperanto stores parsed trackers into it)
+# with it to discard the stored blob. 
 #
-#  a = Tracksperanto::Accumulator.new
+#  a = Obuf.new
 #  parse_big_file do | one_node |
 #    a.push(one_node)
 #  end
@@ -17,7 +16,7 @@ require "tempfile"
 #
 #  a.clear # ensure that the file is deleted
 #
-# Both reading and writing aim to be threadsafe (writing operations will be locked with a mutex, and )
+# Both reading and writing aim to be threadsafe
 class Obuf
   VERSION = "1.0.0"
   
@@ -69,8 +68,10 @@ class Obuf
   
   # Calls close! on the datastore and deletes the objects in it
   def clear
-    @store.close!
-    @size = 0
+    @sem.synchronize do
+      @store.close!
+      @size = 0
+    end
   end
   
   # Retreive a concrete object at index
