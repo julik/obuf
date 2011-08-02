@@ -1,0 +1,7 @@
+.autotest
+History.txt
+Manifest.txt
+README.rdoc
+Rakefile
+lib/obuf.rb
+test/test_obuf.rb
