@@ -1,4 +1,5 @@
 require "tempfile"
+require "thread" # required for ruby 18
 
 # An object buffer for Ruby objects. Use it to sequentially store a shitload
 # of objects on disk and then retreive them one by one. Make sure to call clear when done
@@ -18,7 +19,7 @@ require "tempfile"
 #
 # Both reading and writing aim to be threadsafe
 class Obuf
-  VERSION = "1.0.0"
+  VERSION = "1.0.1"
   
   include Enumerable
   
@@ -30,7 +31,7 @@ class Obuf
   
   def initialize
     @sem = Mutex.new
-    @store = create_store
+    @store = Tempfile.new("obuf")
     @store.set_encoding(Encoding::BINARY) if @store.respond_to?(:set_encoding)
     @store.binmode
     
@@ -74,9 +75,9 @@ class Obuf
     end
   end
   
-  # Retreive a concrete object at index
-  def [](idx)
-    idx.respond_to?(:each) ? idx.map{|i| recover_at(i) } : recover_at(idx)
+  # Retreive a slice of the enumerable at index
+  def [](slice)
+    slice.respond_to?(:each) ? slice.map{|i| recover_at(i) } : recover_at(slice)
   end
   
   private
@@ -101,7 +102,7 @@ class Obuf
     # Ensure all data is written before we read it
     @sem.synchronize { @store.flush }
     
-    iterable = File.open(@store.path, "r")
+    iterable = File.open(@store.path, "rb")
     begin
       yield(iterable)
     ensure
@@ -109,20 +110,24 @@ class Obuf
     end
   end
   
-  def marshal_object(object_to_store)
-    d = Marshal.dump(object_to_store)
-  end
-  
   def recover_object_from(io)
     # Up to the tab is the amount of bytes to read
     demarshal_bytes = io.gets("\t").to_i
     blob = io.read(demarshal_bytes)
-    
-    Marshal.load(blob)
+    demarshal_object(blob)
   end
   
-  # In case you need to use something else (say, a StringIO)
-  def create_store
-    Tempfile.new("obuf")
+  # This method is only used internally. 
+  # Override this if you need non-default marshalling 
+  # (don't forget to also override demarshal_object)
+  def marshal_object(object_to_store)
+    d = Marshal.dump(object_to_store)
+  end
+  
+  # This method is only used internally. 
+  # Override this if you need non-default demarshalling
+  # (don't forget to also override marshal_object)
+  def demarshal_object(blob)
+    Marshal.load(blob)
   end
 end

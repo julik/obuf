@@ -2,6 +2,7 @@ require "test/unit"
 require "obuf"
 require "flexmock"
 require "flexmock/test_unit"
+require "stringio"
 
 # http://redmine.ruby-lang.org/issues/4882
 # https://github.com/jimweirich/flexmock/issues/4
@@ -13,6 +14,7 @@ class FlexMock::PartialMockProxy
 end
 
 class TestObuf < Test::Unit::TestCase
+  
   def test_accumulator_saves_objs
     a = Obuf.new
     values = [3, {:foo => "bar"}, "foo"]
