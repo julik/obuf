@@ -1,7 +1,7 @@
 # -*- ruby -*-
 require 'rubygems'
-require './lib/obuf'
 require 'jeweler'
+require './lib/obuf'
 
 Jeweler::Tasks.new do |gem|
   gem.version = Obuf::VERSION
@@ -12,9 +12,6 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/julik/obuf"
   gem.authors = ["Julik Tarkhanov"]
   gem.license = 'MIT'
-
-  # Do not package up test fixtures
-  gem.files.exclude ".*"
   
   gem.add_development_dependency "jeweler"
   gem.add_development_dependency "rake"
