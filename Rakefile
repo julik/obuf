@@ -1,15 +1,34 @@
 # -*- ruby -*-
-
 require 'rubygems'
-require 'hoe'
+require './lib/obuf'
+require 'jeweler'
 
-Hoe.spec 'obuf' do | p |
-  p.developer('Julik Tarkhanov', 'me@julik.nl')
+Jeweler::Tasks.new do |gem|
+  gem.version = Obuf::VERSION
+  gem.name = "obuf"
+  gem.summary = "Ruby disk-backed object buffer"
+  gem.description = "Stores marshaled temporary objects on-disk in a simple Enumerable"
+  gem.email = "me@julik.nl"
+  gem.homepage = "http://github.com/julik/obuf"
+  gem.authors = ["Julik Tarkhanov"]
+  gem.license = 'MIT'
 
-  p.readme_file   = 'README.rdoc'
-  p.extra_rdoc_files  = FileList['*.rdoc'] + FileList['*.txt']
-  p.extra_dev_deps = {"flexmock" => "~> 0.8"}
-  p.clean_globs = File.read(File.dirname(__FILE__) + "/.gitignore").split(/\s/).to_a
+  # Do not package up test fixtures
+  gem.files.exclude ".*"
+  
+  gem.add_development_dependency "jeweler"
+  gem.add_development_dependency "rake"
+  gem.add_development_dependency "flexmock", "~>0.8"
 end
 
-# vim: syntax=ruby
+Jeweler::RubygemsDotOrgTasks.new
+
+require 'rake/testtask'
+desc "Run all tests"
+Rake::TestTask.new("test") do |t|
+  t.libs << "test"
+  t.pattern = 'test/**/test_*.rb'
+  t.verbose = true
+end
+
+task :default => [ :test ]
