@@ -73,6 +73,26 @@ class TestObuf < Test::Unit::TestCase
     assert_equal "E\r\nWow!", a[4]
   end
   
+  def test_random_access
+    a = Obuf.new
+    letters = ("A".."Z").map{|e| "#{e}\r\nWow!"}.to_a
+    letters.map(&a.method(:push))
+    
+    assert_equal "B\r\nWow!", a[1]
+    assert_equal "E\r\nWow!", a[4]
+  end
+
+  def test_random_access_out_of_bounds
+    a = Obuf.new
+    letters = ("A".."Z").map{|e| "#{e}\r\nWow!"}.to_a
+    letters.map(&a.method(:push))
+    assert_equal nil, a[27]
+    
+    b = Obuf.new
+    assert_nil b[0]
+    assert_nil b[-1]
+  end
+  
   def test_clear_calls_close_on_buffer
     io = Tempfile.new("testing")
     flexmock(io).should_receive(:close!).once

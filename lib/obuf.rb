@@ -19,7 +19,7 @@ require "thread" # required for ruby 18
 #
 # Both reading and writing aim to be threadsafe
 class Obuf
-  VERSION = "1.0.1"
+  VERSION = "1.0.2"
   
   include Enumerable
   
@@ -113,6 +113,10 @@ class Obuf
   def recover_object_from(io)
     # Up to the tab is the amount of bytes to read
     demarshal_bytes = io.gets("\t").to_i
+    
+    # When at end of IO return nil
+    return nil if demarshal_bytes == 0
+    
     blob = io.read(demarshal_bytes)
     demarshal_object(blob)
   end
