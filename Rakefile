@@ -12,10 +12,6 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/julik/obuf"
   gem.authors = ["Julik Tarkhanov"]
   gem.license = 'MIT'
-  
-  gem.add_development_dependency "jeweler"
-  gem.add_development_dependency "rake"
-  gem.add_development_dependency "flexmock", "~>0.8"
 end
 
 Jeweler::RubygemsDotOrgTasks.new
