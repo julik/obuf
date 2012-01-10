@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "obuf"
-  s.version = "1.0.1"
+  s.version = "1.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Julik Tarkhanov"]
-  s.date = "2011-11-21"
+  s.date = "2012-01-10"
   s.description = "Stores marshaled temporary objects on-disk in a simple Enumerable"
   s.email = "me@julik.nl"
   s.extra_rdoc_files = [
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "lib/obuf.rb",
+    "obuf.gemspec",
     "test/test_obuf.rb"
   ]
   s.homepage = "http://github.com/julik/obuf"
@@ -42,8 +43,14 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_development_dependency(%q<flexmock>, ["~> 0.8"])
+      s.add_development_dependency(%q<jeweler>, [">= 0"])
+      s.add_development_dependency(%q<rake>, [">= 0"])
+      s.add_development_dependency(%q<flexmock>, ["~> 0.8"])
     else
       s.add_dependency(%q<obuf>, [">= 0"])
+      s.add_dependency(%q<jeweler>, [">= 0"])
+      s.add_dependency(%q<rake>, [">= 0"])
+      s.add_dependency(%q<flexmock>, ["~> 0.8"])
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<flexmock>, ["~> 0.8"])
@@ -53,6 +60,9 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<obuf>, [">= 0"])
+    s.add_dependency(%q<jeweler>, [">= 0"])
+    s.add_dependency(%q<rake>, [">= 0"])
+    s.add_dependency(%q<flexmock>, ["~> 0.8"])
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<flexmock>, ["~> 0.8"])
