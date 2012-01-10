@@ -1,7 +1,10 @@
+=== 1.0.3 / 2011-08-02
+
+* Fix the gem packaging issue
+
 === 1.0.2 / 2011-08-02
 
 * Fix the bug that caused marshaling errors when an index was requested with Obuf#[] that was out of bounds
-
 
 === 1.0.1 / 2011-08-02
 

@@ -19,7 +19,7 @@ require "thread" # required for ruby 18
 #
 # Both reading and writing aim to be threadsafe
 class Obuf
-  VERSION = "1.0.2"
+  VERSION = "1.0.3"
   
   include Enumerable
   
