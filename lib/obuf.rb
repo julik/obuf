@@ -105,9 +105,11 @@ class Obuf
   # and iterate through that (we will have one IO handle per loop nest)
   def with_separate_read_io
     # Ensure all data is written before we read it
-    @sem.synchronize { @store.flush }
+    iterable = @sem.synchronize do
+      @store.flush
+      File.open(@store.path, "rb")
+    end
     
-    iterable = File.open(@store.path, "rb")
     begin
       yield(iterable)
     ensure
