@@ -24,6 +24,20 @@ class TestObuf < Test::Unit::TestCase
     assert_equal values, a.map{|e| e }, "Should return the same elements from the storage"
   end
   
+  def test_initialize_with_block
+    o = Obuf.new do | buf |
+      buf.push("Excitement!")
+    end
+    
+    assert_equal 1, o.size
+    assert_equal %w( Excitement! ), o.to_a
+  end
+   
+  def test_from_enum
+    a = Obuf.new([1,2,3])
+    assert_equal [1,2,3], a.to_a
+  end
+  
   def test_accumulator_saves_shitload_of_objs
     a = Obuf.new
     50_000.times { a.push("A string" => rand) }

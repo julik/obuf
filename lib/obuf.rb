@@ -19,7 +19,7 @@ require "thread" # required for ruby 18
 #
 # Both reading and writing aim to be threadsafe
 class Obuf
-  VERSION = "1.0.4"
+  VERSION = "1.1.0"
   
   include Enumerable
   
@@ -29,14 +29,19 @@ class Obuf
   # Returns the number of objects stored so far
   attr_reader :size
   
-  def initialize
+  # Initializes a new Obuf. If an Enumerable argument is passed each element from the
+  # Enumerable will be stored in the Obuf (so you can pass an IO for example)
+  def initialize(enumerable = [])
     @sem = Mutex.new
     @store = Tempfile.new("obuf")
     @store.set_encoding(Encoding::BINARY) if @store.respond_to?(:set_encoding)
     @store.binmode
-    
     @size = 0
-    super
+    
+    # Store everything from the enumerable in self
+    enumerable.each(&method(:push))
+    
+    yield self if block_given?
   end
   
   # Tells whether the buffer is empty

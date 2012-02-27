@@ -1,3 +1,8 @@
+=== 1.1.0 / 2011-08-02
+
+* Stores every item from the Enumerable passed to the constructor
+* Supports block initialization
+
 === 1.0.3 / 2011-08-02
 
 * Fix the gem packaging issue
