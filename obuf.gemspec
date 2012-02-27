@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "obuf"
-  s.version = "1.0.4"
+  s.version = "1.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Julik Tarkhanov"]
-  s.date = "2012-01-10"
+  s.date = "2012-02-27"
   s.description = "Stores marshaled temporary objects on-disk in a simple Enumerable"
   s.email = "me@julik.nl"
   s.extra_rdoc_files = [
@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/julik/obuf"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.11"
+  s.rubygems_version = "1.8.15"
   s.summary = "Ruby disk-backed object buffer"
 
   if s.respond_to? :specification_version then
