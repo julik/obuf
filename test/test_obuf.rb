@@ -4,6 +4,16 @@ require "flexmock"
 require "flexmock/test_unit"
 require "stringio"
 
+# We are limited to flexmock 0.8 on Ruby 1.8
+# http://redmine.ruby-lang.org/issues/4882
+# https://github.com/jimweirich/flexmock/issues/4
+# https://github.com/julik/flexmock/commit/4acea00677e7b558bd564ec7c7630f0b27d368ca
+class FlexMock::PartialMockProxy
+  def singleton?(method_name)
+    @obj.singleton_methods.include?(method_name.to_s)
+  end
+end
+
 class TestObuf < Test::Unit::TestCase
   
   def test_accumulator_saves_objs
