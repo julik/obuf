@@ -132,8 +132,9 @@ class TestLens < Test::Unit::TestCase
     lens = Obuf::Lens.new(mock_io)
     lens << "Hi there!"
     
-    recovered = lens.recover_object
-    assert_nil recovered, "The IO is at the end now"
+    assert_raise Obuf::Lens::NothingToRecover do
+      lens.recover_object
+    end
     
     mock_io.rewind
     recovered = lens.recover_object
@@ -161,6 +162,22 @@ class TestLens < Test::Unit::TestCase
     assert_equal [123, :a], items[2]
   end
   
+  def test_lens_to_a
+    mock_io = StringIO.new
+    
+    writing_lens = Obuf::Lens.new(mock_io)
+    writing_lens << "Hi there!"
+    writing_lens << 98121
+    writing_lens << [123, :a]
+    
+    mock_io.rewind
+    
+    reading_lens = Obuf::Lens.new(mock_io)
+    items = reading_lens.to_a
+    assert_equal 3, items.length
+    assert_equal "Hi there!", items[0]
+  end
+      
   def test_lens_recover_at
     mock_io = StringIO.new
     

@@ -3,6 +3,7 @@ require 'thread'
 # Provides a per-object iterator on top of any IO object or pipe
 class Obuf::Lens
   include Enumerable
+  NothingToRecover = Class.new(StandardError)
   
   DELIM = "\t"
   END_RECORD = "\n"
@@ -32,7 +33,10 @@ class Obuf::Lens
       skip_bytes = @io.gets("\t").to_i
       @io.seek(@io.pos + skip_bytes + 1)
     end
+    
     recover_object
+  rescue NothingToRecover # TODO: we need to honor this exception in the future
+    nil
   end
   
   # Recover the object at the current position in the IO. Returns +nil+
@@ -42,14 +46,17 @@ class Obuf::Lens
     demarshal_bytes = @io.gets("\t").to_i
     
     # When at end of IO return nil
-    return nil if demarshal_bytes == 0
+    raise NothingToRecover if demarshal_bytes.zero?
     
     blob = @io.read(demarshal_bytes)
     demarshal_object(blob)
   end
   
   def each
-    yield(recover_object) until @io.eof?
+    begin
+      loop { yield(recover_object) }
+    rescue NothingToRecover
+    end
   end
   
   private

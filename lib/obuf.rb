@@ -19,7 +19,7 @@ require "thread" # required for ruby 18
 #
 # Both reading and writing aim to be threadsafe
 class Obuf
-  VERSION = "1.2.0"
+  VERSION = "1.2.1"
   require File.dirname(__FILE__) + "/obuf/lens"
   require File.dirname(__FILE__) + "/obuf/protected_lens"
   
