@@ -1,5 +1,7 @@
 # obuf
 
+[![Build Status](https://travis-ci.org/julik/obuf.svg?branch=master)](https://travis-ci.org/julik/obuf)
+
 A simple Ruby object buffer. Use this if you need to temporarily store alot of serializable Ruby objects.
 
     obuf = Obuf.new
