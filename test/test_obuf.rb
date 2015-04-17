@@ -116,9 +116,13 @@ class TestLens < Test::Unit::TestCase
   def test_lens_write
     mock_io = flexmock()
     lens = Obuf::Lens.new(mock_io)
-    flexmock(mock_io).should_receive(:write).with(19)
+    flexmock(mock_io).should_receive(:write){|written|
+      assert_kind_of Fixnum, written
+    }
     flexmock(mock_io).should_receive(:write).with("\t")
-    flexmock(mock_io).should_receive(:write).with("\x04\bI\"\x0EHi there!\x06:\x06ET")
+    flexmock(mock_io).should_receive(:write){|byte_blob|
+      assert_kind_of String, byte_blob
+    }
     flexmock(mock_io).should_receive(:write).with("\n")
     lens << "Hi there!"
   end
