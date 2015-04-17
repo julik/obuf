@@ -19,12 +19,11 @@ require "thread" # required for ruby 18
 #
 # Both reading and writing aim to be threadsafe
 class Obuf
-  VERSION = "1.1.0"
+  VERSION = "1.2.0"
+  require File.dirname(__FILE__) + "/obuf/lens"
+  require File.dirname(__FILE__) + "/obuf/protected_lens"
   
   include Enumerable
-  
-  DELIM = "\t"
-  END_RECORD = "\n"
   
   # Returns the number of objects stored so far
   attr_reader :size
@@ -34,13 +33,15 @@ class Obuf
   def initialize(enumerable = [])
     @sem = Mutex.new
     @store = Tempfile.new("obuf")
-    @store.set_encoding(Encoding::BINARY) if @store.respond_to?(:set_encoding)
     @store.binmode
     @size = 0
     
-    # Store everything from the enumerable in self
-    enumerable.each(&method(:push))
+    @lens = Obuf::ProtectedLens.new(@store)
     
+    # Store everything from the enumerable in self
+    enumerable.each { |e| push(e) }
+    
+    # ...and yield self for any configuration
     yield self if block_given?
   end
   
@@ -51,14 +52,10 @@ class Obuf
   
   # Store an object
   def push(object_to_store)
-    blob = marshal_object(object_to_store)
-    @sem.synchronize do
-      @store.write(blob.size)
-      @store.write(DELIM)
-      @store.write(blob)
-      @store.write(END_RECORD)
+    @sem.synchronize {
+      @lens << object_to_store
       @size += 1
-    end
+    }
     object_to_store
   end
   
@@ -68,7 +65,8 @@ class Obuf
   # methods are also available (but be careful with Enumerable#map and to_a)
   def each
     with_separate_read_io do | iterable |
-      @size.times { yield(recover_object_from(iterable)) }
+      reading_lens = Obuf::Lens.new(iterable)
+      @size.times { yield(reading_lens.recover_object) }
     end
   end
   
@@ -89,15 +87,8 @@ class Obuf
   
   def recover_at(idx)
     with_separate_read_io do | iterable |
-      iterable.seek(0)
-      
-      # Do not unmarshal anything but wind the IO in fixed offsets
-      idx.times do
-        skip_bytes = iterable.gets("\t").to_i
-        iterable.seek(iterable.pos + skip_bytes)
-      end
-      
-      recover_object_from(iterable)
+      reading_lens = Obuf::Lens.new(iterable)
+      reading_lens.recover_at(idx)
     end
   end
   
@@ -115,30 +106,5 @@ class Obuf
     ensure
       iterable.close
     end
-  end
-  
-  def recover_object_from(io)
-    # Up to the tab is the amount of bytes to read
-    demarshal_bytes = io.gets("\t").to_i
-    
-    # When at end of IO return nil
-    return nil if demarshal_bytes == 0
-    
-    blob = io.read(demarshal_bytes)
-    demarshal_object(blob)
-  end
-  
-  # This method is only used internally. 
-  # Override this if you need non-default marshalling 
-  # (don't forget to also override demarshal_object)
-  def marshal_object(object_to_store)
-    d = Marshal.dump(object_to_store)
-  end
-  
-  # This method is only used internally. 
-  # Override this if you need non-default demarshalling
-  # (don't forget to also override marshal_object)
-  def demarshal_object(blob)
-    Marshal.load(blob)
   end
 end

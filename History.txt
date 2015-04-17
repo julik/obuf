@@ -1,3 +1,7 @@
+=== 1.2.0 / 2015-04-17
+
+* Add Obuf::Lens to provide access to externally managed IO objects and files
+
 === 1.1.0 / 2011-08-02
 
 * Stores every item from the Enumerable passed to the constructor

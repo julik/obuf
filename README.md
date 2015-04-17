@@ -1,17 +1,6 @@
-= obuf
-
-* http://github.com/julik/obuf
-
-== DESCRIPTION:
+# obuf
 
 A simple Ruby object buffer. Use this if you need to temporarily store alot of serializable Ruby objects.
-
-== FEATURES/PROBLEMS:
-
-* Thread safe (for as far as I can gauge it)
-* Gives both read and write access to the storage
-
-== SYNOPSIS:
 
     obuf = Obuf.new
     5_000_000.times{  obuf.push(compute_some_object) } # no memory inflation
@@ -19,19 +8,35 @@ A simple Ruby object buffer. Use this if you need to temporarily store alot of s
       # do something with stored_object
     end
 
-== REQUIREMENTS:
+You can also write objects in one process, and recover them in another, using `Obuf::Lens`:
+
+    # In fork process
+    File.open('/tmp/output.bin', 'a') do |f|
+      Obuf::Lens.new(f) << my_object
+    end
+    
+    # In join process after forks completed
+    File.open('/tmp/output.bin', 'r') do |f|
+      Obuf::Lens.new(f).each do | object_written_by_fork |
+        puts object_written_by_fork.inspect
+      end
+    end
+
+The `Lens` is what is used under the hood in the main Obuf as well.
+
+## Requirements
 
 * Ruby 1.8.6+
 
-== INSTALL:
+## Installation
 
 * gem install obuf
 
-== LICENSE:
+## License
 
 (The MIT License)
 
-Copyright (c) 2011 Julik Tarkhanov <me@julik.nl>
+Copyright (c) 2011-2015 Julik Tarkhanov <me@julik.nl>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
