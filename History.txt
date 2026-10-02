@@ -1,3 +1,7 @@
+=== 1.3.1 / 2026-10-02
+
+* Add frozen_string_literal magic comments to all library files
+
 === 1.3.0 / 2026-10-02
 
 * Make Obuf usable from within Ractors (Ruby 4.0+)

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'thread'
 
 # Similar to Obuf::Lens but protects all the operations that change the IO offset
