@@ -1,3 +1,8 @@
+=== 1.3.0 / 2026-10-02
+
+* Make Obuf usable from within Ractors (Ruby 4.0+)
+* Replace Jeweler with a plain gemspec
+
 === 1.2.0 / 2015-04-17
 
 * Add Obuf::Lens to provide access to externally managed IO objects and files

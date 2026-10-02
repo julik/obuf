@@ -1,3 +1,4 @@
+# shareable_constant_value: literal
 require 'thread'
 
 # Provides a per-object iterator on top of any IO object or pipe

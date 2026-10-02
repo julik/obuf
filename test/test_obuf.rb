@@ -198,4 +198,22 @@ class TestLens < Test::Unit::TestCase
     assert_equal "Hi there!", objects_at_positions[3]
   end
   
+  def test_works_inside_a_ractor
+    # On 3.x `Tempfile.new` can't be used from a non-main Ractor
+    omit "Needs Ruby 4.0+ Ractors" unless defined?(Ractor) && Ractor.method_defined?(:value)
+    
+    experimental_warnings, Warning[:experimental] = Warning[:experimental], false
+    begin
+      recovered = Ractor.new do
+        buf = Obuf.new([1, "two", {:three => 3}])
+        result = [buf.to_a, buf[1]]
+        buf.clear
+        result
+      end.value
+      assert_equal [[1, "two", {:three => 3}], "two"], recovered
+    ensure
+      Warning[:experimental] = experimental_warnings
+    end
+  end
+  
 end
